@@ -42,7 +42,7 @@ export default function Register() {
       // !!!!!!!!!!!!!
       // REDIRECT
       // !!!!!!!!!!!!!
-      navigate('.todo');
+      navigate('/todo');
     } catch (error) {
       setServerError(error.message);
     } finally {
