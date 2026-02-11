@@ -6,6 +6,8 @@ import Login from './components/login';
 
 import './App.css';
 import Register from './components/register2';
+import Profile from './components/profile';
+import ProtectedRoute from './components/protectedRoute';
 
 function App() {
   return (
@@ -16,7 +18,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/todo" element={<Register />} />
+          <Route path="/todo" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
     </>

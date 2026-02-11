@@ -15,7 +15,7 @@ function Navigation() {
 
         <MenubarMenu>
           <MenubarTrigger>
-            <Link to="/todos">Todos</Link>
+            <Link to="/todo">Todos</Link>
           </MenubarTrigger>
         </MenubarMenu>
 
