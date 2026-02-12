@@ -11,26 +11,27 @@ function Navigation() {
     navigate('/login')
   }
   return (
-    <nav className="flex justify-between gap-6 mx-auto items-center">
-      <h1 className="text-xl font-bold">MONKE</h1>
-      <Menubar className="flex items-center gap-2">
-        <MenubarMenu>
-          <MenubarTrigger>
-            <Link to="/">Home</Link>
-          </MenubarTrigger>
-        </MenubarMenu>
+    <nav className="flex justify-between gap-5 mx-auto items-center">
+      <h1 className="text-3xl font-poppins font-bold">MONKE</h1>
+      <Menubar className="flex items-center gap-4">
 
         {!authenticated ? (
           <>
             <MenubarMenu>
-              <MenubarTrigger asChild>
-                <Link to="/login">Login</Link>
+              <MenubarTrigger>
+                <Link className="text-lg font-poppins" to="/">Home</Link>
               </MenubarTrigger>
             </MenubarMenu>
 
             <MenubarMenu>
               <MenubarTrigger asChild>
-                <Link to="/register">Register</Link>
+                <Link className="text-lg font-poppins" to="/login">Login</Link>
+              </MenubarTrigger>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger asChild>
+                <Link className="text-lg font-poppins" to="/register">Register</Link>
               </MenubarTrigger>
             </MenubarMenu>
           </>
@@ -38,11 +39,17 @@ function Navigation() {
           <>
             <MenubarMenu>
               <MenubarTrigger>
-                <Link to="/todo">Todos</Link>
+                <Link className="text-lg font-poppins" to="/profile">Home</Link>
+              </MenubarTrigger>
+            </MenubarMenu>
+
+            <MenubarMenu>
+              <MenubarTrigger>
+                <Link className="text-lg font-poppins" to="/todo">Todos</Link>
               </MenubarTrigger>
             </MenubarMenu>
             <MenubarMenu>
-              <MenubarTrigger onClick={handleLogout}>
+              <MenubarTrigger className="text-lg font-poppins" onClick={handleLogout}>
                 Logout
               </MenubarTrigger>
             </MenubarMenu>

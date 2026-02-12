@@ -8,19 +8,25 @@ import './App.css';
 import Register from './components/register2';
 import Profile from './components/profile';
 import ProtectedRoute from './components/protectedRoute';
+import Todos from './components/todos';
 
 function App() {
   return (
     <>
-      <div className="py-4 px-4">
+      <div className="py-5 px-12">
         <Navigation />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/todo" element={
+          <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/todo" element={
+            <ProtectedRoute>
+              <Todos />
             </ProtectedRoute>
           } />
         </Routes>

@@ -30,7 +30,7 @@ export default function Login() {
             localStorage.setItem("accessToken", result.accessToken)
             localStorage.setItem("refreshToken", result.refreshToken)
 
-            navigate("/todo")
+            navigate("/profile")
         } catch(error) {
             setServerError(error.response?.data?.message || "Login failed. Try again.")
         }
