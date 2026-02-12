@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Navigation from './components/navigation';
 import Home from './components/home';
-import Login from './components/login';
+import Login from './components/login1';
 
 import './App.css';
 import Register from './components/register2';
