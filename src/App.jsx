@@ -1,14 +1,21 @@
 import { Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+
 import { Button } from '@/components/ui/button';
+
 import Navigation from './components/navigation';
 import Home from './components/home';
 import Login from './components/login1';
 
-import './App.css';
 import Register from './components/register2';
 import Profile from './components/profile';
 import ProtectedRoute from './components/protectedRoute';
-import Todos from './components/todos';
+// import Todos from './components/todos';
+
+import './App.css';
+
+const Todos = lazy(() => import('./components/todos'))
+// const Profile = lazy(() => import('./components/profile'))
 
 function App() {
   return (
@@ -26,7 +33,9 @@ function App() {
           } />
           <Route path="/todo" element={
             <ProtectedRoute>
-              <Todos />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Todos />
+              </Suspense>
             </ProtectedRoute>
           } />
         </Routes>

@@ -1,198 +1,274 @@
-import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import SearchBox from "./searchbox";
 import TodoModal from "./todomodal";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
-export default function Todos() {
-  const [todos, setTodos] = useState([])
-  const [meta, setMeta] = useState(null)
-  const [page, setPage] = useState(1)
+const BASE_URL = "https://api.oluwasetemi.dev";
 
-  const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState(false)
+export default function Todo() {
+  const [tasks, setTasks] = useState([]);
+  const [meta, setMeta] = useState(null);
 
-  const [openModal, setOpenModal] = useState(false)
-  const [editingTodo, setEditingTodo] = useState(null)
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("ALL");
 
-  const token = localStorage.getItem('accessToken')
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(null);
+  const [error, setError] = useState(null);
 
-  const fetchTodos = async () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+
+  const token = localStorage.getItem("accessToken");
+
+  // ================= FETCH TASKS =================
+  const fetchTasks = async () => {
     try {
       setLoading(true);
+      setError(null);
 
-      const response = await fetch(
-        `https://api.oluwasetemi.dev/posts?page=${page}&limit=6`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      let query = `?page=${page}&limit=10&search=${search}`;
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to fetch todos')
+      if (status !== "ALL") {
+        query += `&status=${status}`;
       }
 
-      setTodos(result.data || [])
-      setMeta(result.meta || null)
-    } catch (error) {
-      console.error(error)
+      const response = await fetch(`${BASE_URL}/tasks${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to fetch tasks");
+      }
+
+      setTasks(result.data || []);
+      setMeta(result.meta || null);
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTodos()
-  }, [page])
+    fetchTasks();
+  }, [page, search, status]);
 
-  const handleSubmit = async (title) => {
+  // ================= CREATE / UPDATE =================
+  const handleSave = async (data) => {
     try {
-      setActionLoading(true)
+      setActionLoading("save");
 
-      const url = editingTodo ? `https://api.oluwasetemi.dev/posts/${editingTodo.id}` : `https://api.oluwasetemi.dev/posts`;
-      const method = editingTodo ? 'PATCH' : 'POST'
+      const method = editingTask ? "PUT" : "POST";
+      const url = editingTask
+        ? `${BASE_URL}/tasks/${editingTask.id}`
+        : `${BASE_URL}/tasks`;
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title })
-      })
-      const result = await response.json()
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || 'Something went wrong')
+        throw new Error(result.message || "Something went wrong");
       }
 
-      setOpenModal(false)
-      setEditingTodo(null)
-      fetchTodos()
-    } catch (error) {
-      console.error(error)
+      setOpenModal(false);
+      setEditingTask(null);
+      fetchTasks();
+    } catch (err) {
+      alert(err.message);
     } finally {
-      setActionLoading(false)
+      setActionLoading(null);
     }
-  }
+  };
 
-  const deleteTodo = async (id) => {
+  // ================= DELETE =================
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this task?")) return;
+
     try {
-      setActionLoading(true);
+      setActionLoading(id);
 
-      const response = await fetch(
-        `https://api.oluwasetemi.dev/posts/${id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
-        throw new Error('Delete failed');
+        throw new Error("Failed to delete");
       }
 
-      fetchTodos();
-    } catch (error) {
-      console.error(error);
+      fetchTasks();
+    } catch (err) {
+      alert(err.message);
     } finally {
-      setActionLoading(false);
+      setActionLoading(null);
     }
-  }
-
-  if (loading) {
-    return <p className="text-center mt-10">Loading todos...</p>;
-  }
+  };
 
   return (
-    <>
-      <div className="p-8 min-h-screen">
-        {todos.length === 0 ? (
-          <div className="flex items-center justify-center h-[70vh]">
+    <section className="p-6 min-h-screen">
+      <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-between">
+        <h1 className="text-2xl font-bold">Tasks</h1>
+
+        <div className="flex gap-4 flex-wrap">
+          <SearchBox
+            value={search}
+            onChange={(value) => {
+              setPage(1);
+              setSearch(value);
+            }}
+            loading={loading}
+          />
+
+          <select
+            value={status}
+            onChange={(e) => {
+              setPage(1);
+              setStatus(e.target.value);
+            }}
+            className="border px-3 py-2 rounded"
+          >
+            <option value="ALL">All</option>
+            <option value="TODO">Todo</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+      </header>
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">
+          {error}
+        </div>
+      )}
+
+      {loading && <p className="text-center mt-10">Loading...</p>}
+
+      {!loading && tasks.length === 0 && (
+        <div className="flex justify-center items-center h-[60vh]">
+          <button
+            onClick={() => {
+              setEditingTask(null);
+              setOpenModal(true);
+            }}
+            className="text-6xl border rounded-2xl w-32 h-32 flex items-center justify-center hover:bg-gray-100 transition"
+          >
+            +
+          </button>
+        </div>
+      )}
+
+      {!loading && tasks.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {tasks.map((task) => (
+              <div
+                key={task.id}
+                className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
+              >
+                <Link to={`/tasks/${task.id}`}>
+                  <h2 className="font-semibold mb-2 truncate">
+                    {task.name}
+                  </h2>
+                </Link>
+
+                <p className="text-sm mb-2">
+                  Status: {task.status}
+                </p>
+
+                <p className="text-sm mb-4">
+                  Priority: {task.priority}
+                </p>
+
+                <div className="flex justify-between gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setEditingTask(task);
+                      setOpenModal(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    disabled={actionLoading === task.id}
+                    onClick={() => handleDelete(task.id)}
+                  >
+                    {actionLoading === task.id
+                      ? "Deleting..."
+                      : "Delete"}
+                  </Button>
+                </div>
+              </div>
+            ))}
+
             <button
-              onClick={() => setOpenModal(true)}
-              className="w-32 h-32 border-2 border-dashed rounded-xl flex items-center justify-center hover:bg-gray-100 transition"
+              onClick={() => {
+                setEditingTask(null);
+                setOpenModal(true);
+              }}
+              className="border-2 border-dashed rounded-xl flex items-center justify-center text-4xl hover:bg-gray-100 transition"
             >
-              <Plus size={40} />
+              +
             </button>
           </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {todos.map((todo) => (
-                <div
-                  key={todo.id}
-                  className="border rounded-xl p-4 shadow-sm"
-                >
-                  <h3 className="font-semibold mb-4">{todo.title}</h3>
 
-                  <div className="flex justify-between text-sm">
-                    <button
-                      onClick={() => {
-                        setEditingTodo(todo);
-                        setOpenModal(true);
-                      }}
-                      className="text-blue-500"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => deleteTodo(todo.id)}
-                      className="text-red-500"
-                      disabled={actionLoading}
-                    >
-                      {actionLoading ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              <button
-                onClick={() => setOpenModal(true)}
-                className="border-2 border-dashed rounded-xl flex items-center justify-center hover:bg-gray-100 transition"
+          {meta && (
+            <div className="flex justify-center items-center gap-4 mt-8">
+              <Button
+                disabled={!meta.hasPreviousPage}
+                onClick={() => setPage((prev) => prev - 1)}
               >
-                <Plus size={40} />
-              </button>
+                Prev
+              </Button>
+
+              <span>
+                Page {meta.page} of {meta.totalPages}
+              </span>
+
+              <Button
+                disabled={!meta.hasNextPage}
+                onClick={() => setPage((prev) => prev + 1)}
+              >
+                Next
+              </Button>
             </div>
+          )}
+        </>
+      )}
 
-            {meta && (
-              <div className="flex justify-center gap-4 mt-8">
-                <Button
-                  disabled={!meta.hasPreviousPage}
-                  onClick={() => setPage((prev) => prev - 1)}
-                >
-                  Prev
-                </Button>
-
-                <span className="flex items-center">
-                  Page {meta.page} of {meta.totalPages}
-                </span>
-
-                <Button
-                  disabled={!meta.hasNextPage}
-                  onClick={() => setPage((prev) => prev + 1)}
-                >
-                  Next
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-
+      {openModal && (
         <TodoModal
           open={openModal}
-          setOpen={setOpenModal}
-          onSubmit={handleSubmit}
-          defaultValue={editingTodo?.title}
-          loading={actionLoading}
+          onClose={() => {
+            setOpenModal(false);
+            setEditingTask(null);
+          }}
+          onSave={handleSave}
+          loading={actionLoading === "save"}
+          initialData={editingTask}
         />
-      </div>
-    </>
-  )
+      )}
+    </section>
+  );
 }
