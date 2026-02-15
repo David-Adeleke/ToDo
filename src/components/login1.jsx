@@ -10,7 +10,7 @@ export default function Login() {
     const token = localStorage.getItem("accessToken")
 
     if (token) {
-        return <Navigate to="/todo" replace />
+        return <Navigate to="/tasks" replace /> //EDIT
     }
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm()

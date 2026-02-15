@@ -32,7 +32,7 @@ export default class ErrorBoundary extends Component {
           </p>
 
           <Link
-            to='/todo'
+            to='/tasks'
             onClick={this.handleReset}
             className="px-4 py-2 border rounded hover:bg-gray-100"
           >

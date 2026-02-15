@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 const BASE_URL = "https://api.oluwasetemi.dev"
 
 export default function TodoDetails() {
-  const {id}= useParams()
+  const { id } = useParams()
   const navigate = useNavigate()
 
   const [todo, setTodo] = useState(null)
@@ -16,15 +16,15 @@ export default function TodoDetails() {
   useEffect(() => {
     const fetchTodo = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/todo/${id}`, {
+        const response = await fetch(`${BASE_URL}/tasks/${id}`, {
           headers: {
-            Authorisation: `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         })
 
-        const result= await response.json()
+        const result = await response.json()
 
-        if(!response.ok) {
+        if (!response.ok) {
           throw new Error(result.message || 'Failed to fetch todo')
         }
 
@@ -35,27 +35,15 @@ export default function TodoDetails() {
         setLoading(false)
       }
     }
-  }, [id])
 
-  if(loading) {
-    return <p className="p-6">Loading Todo details....</p>
-  }
+    fetchTodo()
+  }, [id, token])
 
-  if(error) {
-    return (
-      <div className="p-6 text-red-600">
-        Error: {error}
-      </div>
-    )
-  }
+  if (loading) return <p className="p-6">Loading Todo details....</p>
 
-  if(!todo) {
-    return (
-      <div className="p-6">
-        Todo Not Found.
-      </div>
-    )
-  }
+  if (error) return <div className="p-6 text-red-600">Error: {error}</div>
+
+  if (!todo) return <div className="p-6">Todo Not Found.</div>
 
   return (
     <section className="p-6 max-w-2xl mx-auto">
@@ -77,8 +65,7 @@ export default function TodoDetails() {
       </p>
 
       <p className="mb-4">
-        <strong>Description:</strong>{" "}
-        {todo.description || "No description"}
+        <strong>Description:</strong> {todo.description || "No description"}
       </p>
 
       <p className="text-sm text-gray-500">

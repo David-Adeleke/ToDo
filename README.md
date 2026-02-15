@@ -1,16 +1,78 @@
-# React + Vite
+# Vite React Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+This project is a Todo App built with React and Vite. It allows users to manage tasks efficiently by providing the ability to create, edit, delete, and view detailed information for each task. Users can filter tasks by status, search by name, and navigate through paginated lists. The app is fully responsive and optimized for mobile, tablet, and desktop screens.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The frontend uses a modern stack with Vite for fast development, React for a component-based architecture, Tailwind CSS for styling, and shadcn UI components for consistent, accessible UI elements. State management is handled locally within components, with `react-hook-form` used for form management and validation. Routes are handled with `react-router-dom`, including protected routes for authentication.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- Add new tasks with name, status, priority, and description  
+- Edit existing tasks with pre-filled forms  
+- Delete tasks with confirmation  
+- View task details with timestamps for creation and updates  
+- Search and filter tasks by status  
+- Pagination for efficient handling of large task lists  
+- Responsive UI across devices  
+- Protected routes requiring authentication  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Setup Instructions
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/David-Adeleke/ToDo.git
+cd todo-app
+
+2. Install dependencies:
+npm install
+
+3. Start the development server:
+npm run dev
+
+4. Open http://localhost:5173 in your browser.
+
+## Available Scripts
+
+npm run dev – Starts the Vite development server
+
+npm run build – Builds the project for production
+
+npm run preview – Previews the production build locally
+
+npm run lint – Runs ESLint to check code quality
+
+## Technology Choices
+
+- Vite – Fast, modern build tool optimized for React projects
+
+- React – Component-based library for building the frontend
+
+- React Router DOM – Handles routing and nested routes
+
+- Tailwind CSS – Utility-first styling for rapid UI development
+
+- Shadcn UI – Provides accessible, prebuilt UI components
+
+- React Hook Form – Simplifies form handling and validation
+
+- Axios – HTTP client for API requests
+
+- Tailwind Merge – Manage conditional class names and variant styling
+
+- Lucide React – Icon library for lightweight and scalable SVG icons
+
+## Screenshots
+![Alt text](image.png)
+
+# Reasoning:
+This stack provides a balance of speed, simplicity, and maintainability. Vite ensures fast development builds, while Tailwind CSS and shadcn allow rapid creation of responsive, accessible UIs. React Hook Form makes handling forms simple and reduces boilerplate. Overall, the stack keeps the project modular, scalable, and easy to extend.
+
+## Known Issues and Future Improvements
+- Todo details page currently navigates to an error page instead of displaying task information correctly.
+- Dark mode toggle could be implemented for better usability in low-light environments.

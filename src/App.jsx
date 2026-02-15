@@ -36,14 +36,21 @@ function App() {
             </ProtectedRoute>
           } />
 
-          <Route path="/todo" element={
+           <Route path="/tasks" element={
             <ProtectedRoute>
               <Suspense fallback={<div>Loading...</div>}>
                 <Todos />
               </Suspense>
             </ProtectedRoute>
           } />
-          <Route path='/todo/:id' element={<TodoDetails /> } />
+
+          {/*<Route path="/tasks/:id" element={
+            <ProtectedRoute>
+              <TodoDetails />
+            </ProtectedRoute>
+          } /> */}
+
+          <Route path="/tasks/:id" element={<TodoDetails />} />
 
           <Route path='/error' element={<ErrorTest />} />
           <Route path='*' element={<NotFound />} />

@@ -45,7 +45,7 @@ function Navigation() {
 
             <MenubarMenu>
               <MenubarTrigger>
-                <Link className="text-lg font-poppins" to="/todo">Todos</Link>
+                <Link className="text-lg font-poppins" to="/tasks">Todos</Link>
               </MenubarTrigger>
             </MenubarMenu>
             <MenubarMenu>
