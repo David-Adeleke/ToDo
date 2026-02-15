@@ -29,7 +29,7 @@ The frontend uses a modern stack with Vite for fast development, React for a com
 git clone https://github.com/David-Adeleke/ToDo.git
 cd todo-app
 
-2. Install dependencies:
+2.Install dependencies:
 npm install
 
 3. Start the development server:
@@ -68,7 +68,13 @@ npm run lint – Runs ESLint to check code quality
 - Lucide React – Icon library for lightweight and scalable SVG icons
 
 ## Screenshots
-![Alt text](image.png)
+![Homepage](image.png)
+
+![Login Page](image-1.png)
+
+![Register Page](image-2.png)
+
+![Tasks Menu](image-3.png)
 
 # Reasoning:
 This stack provides a balance of speed, simplicity, and maintainability. Vite ensures fast development builds, while Tailwind CSS and shadcn allow rapid creation of responsive, accessible UIs. React Hook Form makes handling forms simple and reduces boilerplate. Overall, the stack keeps the project modular, scalable, and easy to extend.
