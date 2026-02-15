@@ -13,6 +13,7 @@ import ProtectedRoute from './components/protectedRoute';
 // import Todos from './components/todos';
 
 import './App.css';
+import ErrorTest from './components/error';
 
 const Todos = lazy(() => import('./components/todos'))
 // const Profile = lazy(() => import('./components/profile'))
@@ -38,6 +39,7 @@ function App() {
               </Suspense>
             </ProtectedRoute>
           } />
+          <Route path='/error' element={<ErrorTest />} />
         </Routes>
       </div>
     </>

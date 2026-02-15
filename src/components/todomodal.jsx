@@ -10,24 +10,28 @@ import {
   
   export default function TodoModal({
     open,
-    setOpen,
+    onClose,
     onSubmit,
-    defaultValue = '',
+    defaultValue = null,
     loading,
   }) {
     const [title, setTitle] = useState('');
   
     useEffect(() => {
-      setTitle(defaultValue);
-    }, [defaultValue]);
+      if (defaultValue) {
+        setTitle(defaultValue.name || '')
+      } else {
+        setTitle('')
+      }
+    }, [defaultValue, open]);
   
     const handleSubmit = () => {
       if (!title.trim()) return;
-      onSubmit(title);
+      onSubmit({name : title});
     };
   
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={onClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
