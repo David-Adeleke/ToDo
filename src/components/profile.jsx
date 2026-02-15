@@ -23,7 +23,7 @@ export default function Profile() {
           throw new Error(result.message || "Failed to fetch profile");
         }
 
-        setUser(result); // API returns the user object directly
+        setUser(result);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -36,7 +36,7 @@ export default function Profile() {
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
-    window.location.reload(); // or navigate to login page
+    window.location.reload();
   };
 
   if (loading) return <p className="p-6">Loading profile...</p>;
