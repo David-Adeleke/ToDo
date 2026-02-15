@@ -28,24 +28,29 @@ The frontend uses a modern stack with Vite for fast development, React for a com
 ```bash
 git clone https://github.com/David-Adeleke/ToDo.git
 cd todo-app
+```
 
 2. Install dependencies:
+```bash
 npm install
+```
 
 3. Start the development server:
+```bash
 npm run dev
+```
 
 4. Open http://localhost:5173 in your browser.
 
 ## Available Scripts
 
-npm run dev – Starts the Vite development server
+```npm run dev``` – Starts the Vite development server
 
-npm run build – Builds the project for production
+```npm run build``` – Builds the project for production
 
-npm run preview – Previews the production build locally
+```npm run preview``` – Previews the production build locally
 
-npm run lint – Runs ESLint to check code quality
+```npm run lint``` – Runs ESLint to check code quality
 
 ## Technology Choices
 
