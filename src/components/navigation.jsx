@@ -39,7 +39,7 @@ function Navigation() {
           <>
             <MenubarMenu>
               <MenubarTrigger>
-                <Link className="text-lg font-poppins" to="/profile">Home</Link>
+                <Link className="text-lg font-poppins" to="/profile">Profile</Link>
               </MenubarTrigger>
             </MenubarMenu>
 
