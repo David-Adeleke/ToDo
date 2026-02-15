@@ -14,6 +14,7 @@ import ProtectedRoute from './components/protectedRoute';
 
 import './App.css';
 import ErrorTest from './components/error';
+import NotFound from './components/notFound';
 
 const Todos = lazy(() => import('./components/todos'))
 // const Profile = lazy(() => import('./components/profile'))
@@ -40,6 +41,7 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path='/error' element={<ErrorTest />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
     </>
