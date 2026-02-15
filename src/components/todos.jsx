@@ -15,7 +15,7 @@ export default function Todo() {
   const [status, setStatus] = useState("ALL");
 
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null);
+  const [action, setAction] = useState(null);
   const [error, setError] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
@@ -23,30 +23,25 @@ export default function Todo() {
 
   const token = localStorage.getItem("accessToken");
 
-  // ================= FETCH TASKS =================
+  // ================= FETCH TODOS =================
   const fetchTasks = async () => {
     try {
       setLoading(true);
       setError(null);
 
       let query = `?page=${page}&limit=10&search=${search}`;
-
-      if (status !== "ALL") {
-        query += `&status=${status}`;
-      }
+      if (status !== "ALL") query += `&status=${status}`;
 
       const response = await fetch(`${BASE_URL}/tasks${query}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
+        const result = await response.json();
         throw new Error(result.message || "Failed to fetch tasks");
       }
 
+      const result = await response.json();
       setTasks(result.data || []);
       setMeta(result.meta || null);
     } catch (err) {
@@ -63,15 +58,14 @@ export default function Todo() {
   // ================= CREATE / UPDATE =================
   const handleSave = async (data) => {
     try {
-      setActionLoading("save");
+      setAction("save");
 
-      const method = editingTask ? "PUT" : "POST";
       const url = editingTask
         ? `${BASE_URL}/tasks/${editingTask.id}`
         : `${BASE_URL}/tasks`;
 
       const response = await fetch(url, {
-        method,
+        method: editingTask ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -79,9 +73,8 @@ export default function Todo() {
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
-
       if (!response.ok) {
+        const result = await response.json();
         throw new Error(result.message || "Something went wrong");
       }
 
@@ -91,7 +84,7 @@ export default function Todo() {
     } catch (err) {
       alert(err.message);
     } finally {
-      setActionLoading(null);
+      setAction(null);
     }
   };
 
@@ -100,13 +93,11 @@ export default function Todo() {
     if (!confirm("Delete this task?")) return;
 
     try {
-      setActionLoading(id);
+      setAction(id);
 
       const response = await fetch(`${BASE_URL}/tasks/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) {
@@ -117,7 +108,7 @@ export default function Todo() {
     } catch (err) {
       alert(err.message);
     } finally {
-      setActionLoading(null);
+      setAction(null);
     }
   };
 
@@ -153,12 +144,7 @@ export default function Todo() {
         </div>
       </header>
 
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">
-          {error}
-        </div>
-      )}
-
+      {error && <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">{error}</div>}
       {loading && <p className="text-center mt-10">Loading...</p>}
 
       {!loading && tasks.length === 0 && (
@@ -179,23 +165,13 @@ export default function Todo() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
-              >
+              <div key={task.id} className="border rounded-xl p-4 shadow-sm flex flex-col justify-between">
                 <Link to={`/tasks/${task.id}`}>
-                  <h2 className="font-semibold mb-2 truncate">
-                    {task.name}
-                  </h2>
+                  <h2 className="font-semibold mb-2 truncate">{task.name}</h2>
                 </Link>
 
-                <p className="text-sm mb-2">
-                  Status: {task.status}
-                </p>
-
-                <p className="text-sm mb-4">
-                  Priority: {task.priority}
-                </p>
+                <p className="text-sm mb-2">Status: {task.status}</p>
+                <p className="text-sm mb-4">Priority: {task.priority}</p>
 
                 <div className="flex justify-between gap-2">
                   <Button
@@ -211,12 +187,10 @@ export default function Todo() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    disabled={actionLoading === task.id}
+                    disabled={action === task.id}
                     onClick={() => handleDelete(task.id)}
                   >
-                    {actionLoading === task.id
-                      ? "Deleting..."
-                      : "Delete"}
+                    {action === task.id ? "Deleting..." : "Delete"}
                   </Button>
                 </div>
               </div>
@@ -235,23 +209,9 @@ export default function Todo() {
 
           {meta && (
             <div className="flex justify-center items-center gap-4 mt-8">
-              <Button
-                disabled={!meta.hasPreviousPage}
-                onClick={() => setPage((prev) => prev - 1)}
-              >
-                Prev
-              </Button>
-
-              <span>
-                Page {meta.page} of {meta.totalPages}
-              </span>
-
-              <Button
-                disabled={!meta.hasNextPage}
-                onClick={() => setPage((prev) => prev + 1)}
-              >
-                Next
-              </Button>
+              <Button disabled={!meta.hasPreviousPage} onClick={() => setPage((p) => p - 1)}>Prev</Button>
+              <span>Page {meta.page} of {meta.totalPages}</span>
+              <Button disabled={!meta.hasNextPage} onClick={() => setPage((p) => p + 1)}>Next</Button>
             </div>
           )}
         </>
@@ -265,7 +225,7 @@ export default function Todo() {
             setEditingTask(null);
           }}
           onSave={handleSave}
-          loading={actionLoading === "save"}
+          loading={action === "save"}
           initialData={editingTask}
         />
       )}

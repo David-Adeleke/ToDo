@@ -15,6 +15,7 @@ import ProtectedRoute from './components/protectedRoute';
 import './App.css';
 import ErrorTest from './components/error';
 import NotFound from './components/notFound';
+import TodoDetails from './components/todoDetails';
 
 const Todos = lazy(() => import('./components/todos'))
 // const Profile = lazy(() => import('./components/profile'))
@@ -28,11 +29,13 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
           } />
+
           <Route path="/todo" element={
             <ProtectedRoute>
               <Suspense fallback={<div>Loading...</div>}>
@@ -40,6 +43,8 @@ function App() {
               </Suspense>
             </ProtectedRoute>
           } />
+          <Route path='/todo/:id' element={<TodoDetails /> } />
+
           <Route path='/error' element={<ErrorTest />} />
           <Route path='*' element={<NotFound />} />
         </Routes>

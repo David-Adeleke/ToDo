@@ -16,7 +16,7 @@ export default function TodoDetails() {
   useEffect(() => {
     const fetchTodo = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+        const response = await fetch(`${BASE_URL}/todo/${id}`, {
           headers: {
             Authorisation: `Bearer ${token}`
           }
@@ -36,6 +36,26 @@ export default function TodoDetails() {
       }
     }
   }, [id])
+
+  if(loading) {
+    return <p className="p-6">Loading Todo details....</p>
+  }
+
+  if(error) {
+    return (
+      <div className="p-6 text-red-600">
+        Error: {error}
+      </div>
+    )
+  }
+
+  if(!todo) {
+    return (
+      <div className="p-6">
+        Todo Not Found.
+      </div>
+    )
+  }
 
   return (
     <section className="p-6 max-w-2xl mx-auto">
