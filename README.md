@@ -44,13 +44,25 @@ npm run dev
 
 ## Available Scripts
 
-```npm run dev``` – Starts the Vite development server
+```bash 
+npm run dev
+```
+– Starts the Vite development server
 
-```npm run build``` – Builds the project for production
+```bash 
+npm run build
+```
+– Builds the project for production
 
-```npm run preview``` – Previews the production build locally
+```bash 
+npm run preview
+```
+– Previews the production build locally
 
-```npm run lint``` – Runs ESLint to check code quality
+```bash
+npm run lint
+```
+– Runs ESLint to check code quality
 
 ## Technology Choices
 
