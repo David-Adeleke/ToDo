@@ -85,7 +85,17 @@ npm run lint
 - Lucide React – Icon library for lightweight and scalable SVG icons
 
 ## Screenshots
-![Alt text](image.png)
+![Homepage](image.png)
+
+![Login Page](image-1.png)
+
+![Register Page](image-2.png)
+
+![Tasks Menu](image-3.png)
+
+![Edit Todo](image-4.png)
+
+![Create New Todo](image-5.png)
 
 # Reasoning:
 This stack provides a balance of speed, simplicity, and maintainability. Vite ensures fast development builds, while Tailwind CSS and shadcn allow rapid creation of responsive, accessible UIs. React Hook Form makes handling forms simple and reduces boilerplate. Overall, the stack keeps the project modular, scalable, and easy to extend.
