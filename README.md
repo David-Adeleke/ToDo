@@ -1,4 +1,4 @@
-# Vite React Todo App
+# Todo App
 
 ## Project Overview
 
