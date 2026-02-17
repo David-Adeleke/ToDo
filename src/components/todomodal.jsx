@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 export default function TodoModal({ open, onClose, onSave, loading, initialData }) {
   const [form, setForm] = useState({
     name: "",
+    description: '',
+    startDate: '',
+    endDate: '',
     status: "TODO",
     priority: "LOW",
   });
@@ -13,20 +16,38 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
     if (initialData) {
       setForm({
         name: initialData.name || "",
+        description: initialData.description || '',
+        startDate: initialData.startDate?.slice(0, 10) || '',
+        endDate: initialData.endDate?.slice(0, 10) || '',
         status: initialData.status || "TODO",
         priority: initialData.priority || "LOW",
       });
     } else {
-      setForm({ name: "", status: "TODO", priority: "LOW" });
+      setForm({
+        name: "",
+        description: '',
+        startDate: '',
+        endDate: '',
+        status: "TODO",
+        priority: "LOW"
+      });
     }
-  }, [initialData]);
+  }, [initialData, open]);
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (form.startDate && form.endDate && form.endDate < form.startDate) {
+      alert('End date cannot be before start date')
+      return
+    }
     onSave(form);
   };
 
@@ -34,8 +55,13 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <form className="bg-white p-6 rounded-xl w-96" onSubmit={handleSubmit}>
-        <h2 className="text-xl font-bold mb-4">{initialData ? "Edit Task" : "New Task"}</h2>
+      <form
+        className="bg-white p-6 rounded-xl w-96"
+        onSubmit={handleSubmit}
+      >
+        <h2 className="text-xl font-bold mb-4">
+          {initialData ? "Edit Task" : "New Task"}
+        </h2>
 
         <input
           name="name"
@@ -46,22 +72,74 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
           required
         />
 
-        <select name="status" value={form.status} onChange={handleChange} className="w-full border p-2 rounded mb-4">
+        <input
+          name="description"
+          placeholder="Task description"
+          value={form.description}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+          rows={3}
+        />
+
+        <label className="block text-sm mb-1">
+          Start Date
+        </label>
+        <input
+          type="date"
+          name="startDate"
+          value={form.startDate}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+
+        <label className="block text-sm mb-1">
+          End Date
+        </label>
+        <input
+          type="date"
+          name="endDate"
+          value={form.endDate}
+          onChange={handleChange}
+          className="w-full border p-2 rounded mb-3"
+        />
+
+        <select 
+          name="status" 
+          value={form.status} 
+          onChange={handleChange} 
+          className="w-full border p-2 rounded mb-3"
+        >
           <option value="TODO">Todo</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="DONE">Done</option>
           <option value="CANCELLED">Cancelled</option>
         </select>
 
-        <select name="priority" value={form.priority} onChange={handleChange} className="w-full border p-2 rounded mb-4">
+        <select 
+          name="priority" 
+          value={form.priority} 
+          onChange={handleChange} 
+          className="w-full border p-2 rounded mb-4"
+        >
           <option value="LOW">Low</option>
           <option value="MEDIUM">Medium</option>
           <option value="HIGH">High</option>
         </select>
 
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button type="submit" disabled={loading}>{loading ? "Saving..." : "Save"}</Button>
+          <Button 
+            type="button" 
+            variant="ghost" 
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save"}
+          </Button>
         </div>
       </form>
     </div>
