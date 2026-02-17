@@ -165,13 +165,36 @@ export default function Todo() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {tasks.map((task) => (
-              <div key={task.id} className="border rounded-xl p-4 shadow-sm flex flex-col justify-between">
+              <div
+                key={task.id}
+                className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
+              >
                 <Link to={`/tasks/${task.id}`}>
                   <h2 className="font-semibold mb-2 truncate">{task.name}</h2>
                 </Link>
 
-                <p className="text-sm mb-2">Status: {task.status}</p>
-                <p className="text-sm mb-4">Priority: {task.priority}</p>
+                {task.description && (
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                    {task.description}
+                  </p>
+                )}
+
+                <p className="text-sm mb-1">Status: {task.status}</p>
+                <p className="mb-1">
+                  <span className="font-medium">Priority:</span> {task.priority}
+                </p>
+
+                {task.startDate && (
+                  <p className="text-xs text-gray-500">
+                    Start: {new Date(task.startDate).toLocaleDateString()}
+                  </p>
+                )}
+
+                {task.endDate && (
+                  <p className="text-xs text-gray-500 mb-2">
+                    Start: {new Date(task.endDate).toLocaleDateString()}
+                  </p>
+                )}
 
                 <div className="flex justify-between gap-2">
                   <Button
