@@ -112,6 +112,12 @@ export default function Todo() {
     }
   };
 
+  const formatText = (value) =>
+  value
+    ?.toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
   return (
     <section className="p-6 min-h-screen">
       <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-between">
@@ -164,35 +170,35 @@ export default function Todo() {
       {!loading && tasks.length > 0 && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {tasks.map((task) => (
+            {tasks.map(({id, name, description, status, priority, startDate, endDate}) => (
               <div
-                key={task.id}
+                key={id}
                 className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
               >
-                <Link to={`/tasks/${task.id}`}>
-                  <h2 className="font-semibold mb-2 truncate">{task.name}</h2>
+                <Link to={`/tasks/${id}`}>
+                  <h2 className="font-semibold mb-2 truncate">{name}</h2>
                 </Link>
 
-                {task.description && (
+                {description && (
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {task.description}
+                    {description}
                   </p>
                 )}
 
-                <p className="text-sm mb-1">Status: {task.status}</p>
+                <p className="text-sm mb-1">Status: {formatText(status)}</p>
                 <p className="mb-1">
-                  <span className="font-medium">Priority:</span> {task.priority}
+                  <span className="text-sm">Priority:</span> {formatText(priority)}
                 </p>
 
-                {task.startDate && (
+                {startDate && (
                   <p className="text-xs text-gray-500">
-                    Start: {new Date(task.startDate).toLocaleDateString()}
+                    Start: {new Date(startDate).toLocaleDateString()}
                   </p>
                 )}
 
-                {task.endDate && (
+                {endDate && (
                   <p className="text-xs text-gray-500 mb-2">
-                    End: {new Date(task.endDate).toLocaleDateString()}
+                    End: {new Date(endDate).toLocaleDateString()}
                   </p>
                 )}
 
@@ -210,10 +216,10 @@ export default function Todo() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    disabled={action === task.id}
-                    onClick={() => handleDelete(task.id)}
+                    disabled={action === id}
+                    onClick={() => handleDelete(id)}
                   >
-                    {action === task.id ? "Deleting..." : "Delete"}
+                    {action === id ? "Deleting..." : "Delete"}
                   </Button>
                 </div>
               </div>
