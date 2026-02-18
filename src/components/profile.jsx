@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Loader from "./loader";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -39,7 +40,7 @@ export default function Profile() {
     window.location.reload();
   };
 
-  if (loading) return <p className="p-6">Loading profile...</p>;
+  if (loading) return <Loader />;
 
   if (error) return <p className="p-6 text-red-600">Error: {error}</p>;
 

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SearchBox from "./searchbox";
 import TodoModal from "./todomodal";
 import { Button } from "@/components/ui/button";
+import Loader from "./loader";
 
 const BASE_URL = "https://api.oluwasetemi.dev";
 
@@ -150,7 +151,7 @@ export default function Todo() {
       </header>
 
       {error && <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">{error}</div>}
-      {loading && <p className="text-center mt-10">Loading...</p>}
+      {loading && <Loader/>}
 
       {!loading && tasks.length === 0 && (
         <div className="flex justify-center items-center h-[60vh]">

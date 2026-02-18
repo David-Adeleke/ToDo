@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TodoModal from "./todomodal";
 import { Button } from "@/components/ui/button";
+import Loader from "./loader";
 
 const BASE_URL = "https://api.oluwasetemi.dev";
 
@@ -105,7 +106,7 @@ export default function TodoDetails() {
       .replace(/_/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
-  if (loading) return <p className="p-6">Loading Todo details...</p>;
+  if (loading) return <Loader />;
 
   if (error)
     return <div className="p-6 text-red-600">Error: {error}</div>;

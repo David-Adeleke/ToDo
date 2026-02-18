@@ -3,9 +3,9 @@ import { Suspense, lazy } from 'react';
 
 import Navigation from './components/navigation';
 import Home from './components/home';
-import Login from './components/login1';
+import Login from './components/login';
 
-import Register from './components/register2';
+import Register from './components/register';
 import Profile from './components/profile';
 import ProtectedRoute from './components/protectedRoute';
 
@@ -14,6 +14,7 @@ import NotFound from './components/notFound';
 import TodoDetails from './components/todoDetails';
 
 import './App.css';
+import Loader from './components/loader';
 
 const Todos = lazy(() => import('./components/todos'))
 
@@ -35,7 +36,7 @@ function App() {
 
           <Route path="/tasks" element={
             <ProtectedRoute>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loader />}>
                 <Todos />
               </Suspense>
             </ProtectedRoute>
@@ -43,7 +44,7 @@ function App() {
 
           <Route path="/tasks/:id" element={
             <ProtectedRoute>
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loader />}>
                 <TodoDetails />
               </Suspense>
             </ProtectedRoute>
