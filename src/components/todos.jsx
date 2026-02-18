@@ -23,7 +23,6 @@ export default function Todo() {
 
   const token = localStorage.getItem("accessToken");
 
-  // ================= FETCH TODOS =================
   const fetchTasks = async () => {
     try {
       setLoading(true);
@@ -170,7 +169,9 @@ export default function Todo() {
       {!loading && tasks.length > 0 && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {tasks.map(({id, name, description, status, priority, startDate, endDate}) => (
+            {tasks.map((task) => {
+              const {id, name, description, status, priority, startDate, endDate} = task
+              return (
               <div
                 key={id}
                 className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
@@ -186,8 +187,8 @@ export default function Todo() {
                 )}
 
                 <p className="text-sm mb-1">Status: {formatText(status)}</p>
-                <p className="mb-1">
-                  <span className="text-sm">Priority:</span> {formatText(priority)}
+                <p className="mb-1 text-sm">
+                  <span className="font-medium">Priority:</span> {formatText(priority)}
                 </p>
 
                 {startDate && (
@@ -223,7 +224,7 @@ export default function Todo() {
                   </Button>
                 </div>
               </div>
-            ))}
+            )})}
 
             <button
               onClick={() => {

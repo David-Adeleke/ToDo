@@ -4,32 +4,31 @@ import { Button } from "@/components/ui/button";
 export default function TodoModal({ open, onClose, onSave, loading, initialData }) {
   const [form, setForm] = useState({
     name: "",
-    description: '',
-    startDate: '',
-    endDate: '',
+    description: "",
+    startDate: "",
+    endDate: "",
     status: "TODO",
     priority: "LOW",
   });
 
-  // Pre-fill form when editing
   useEffect(() => {
     if (initialData) {
       setForm({
         name: initialData.name || "",
-        description: initialData.description || '',
-        startDate: initialData.startDate?.slice(0, 10) || '',
-        endDate: initialData.endDate?.slice(0, 10) || '',
+        description: initialData.description || "",
+        startDate: initialData.startDate?.slice(0, 10) || "",
+        endDate: initialData.endDate?.slice(0, 10) || "",
         status: initialData.status || "TODO",
         priority: initialData.priority || "LOW",
       });
     } else {
       setForm({
         name: "",
-        description: '',
-        startDate: '',
-        endDate: '',
+        description: "",
+        startDate: "",
+        endDate: "",
         status: "TODO",
-        priority: "LOW"
+        priority: "LOW",
       });
     }
   }, [initialData, open]);
@@ -37,7 +36,7 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
   const handleChange = (e) => {
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -45,9 +44,10 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
     e.preventDefault();
 
     if (form.startDate && form.endDate && form.endDate < form.startDate) {
-      alert('End date cannot be before start date')
-      return
+      alert("End date cannot be before start date");
+      return;
     }
+
     onSave(form);
   };
 
@@ -72,7 +72,7 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
           required
         />
 
-        <input
+        <textarea
           name="description"
           placeholder="Task description"
           value={form.description}
@@ -81,32 +81,34 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
           rows={3}
         />
 
-        <label className="block text-sm mb-1">
-          Start Date
-        </label>
-        <input
-          type="date"
-          name="startDate"
-          value={form.startDate}
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-3"
-        />
+        <div className="flex gap-2 mb-3">
+          <div className="flex-1">
+            <label className="block text-sm mb-1">Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              value={form.startDate}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
 
-        <label className="block text-sm mb-1">
-          End Date
-        </label>
-        <input
-          type="date"
-          name="endDate"
-          value={form.endDate}
-          onChange={handleChange}
-          className="w-full border p-2 rounded mb-3"
-        />
+          <div className="flex-1">
+            <label className="block text-sm mb-1">End Date</label>
+            <input
+              type="date"
+              name="endDate"
+              value={form.endDate}
+              onChange={handleChange}
+              className="w-full border p-2 rounded"
+            />
+          </div>
+        </div>
 
-        <select 
-          name="status" 
-          value={form.status} 
-          onChange={handleChange} 
+        <select
+          name="status"
+          value={form.status}
+          onChange={handleChange}
           className="w-full border p-2 rounded mb-3"
         >
           <option value="TODO">Todo</option>
@@ -115,10 +117,10 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
           <option value="CANCELLED">Cancelled</option>
         </select>
 
-        <select 
-          name="priority" 
-          value={form.priority} 
-          onChange={handleChange} 
+        <select
+          name="priority"
+          value={form.priority}
+          onChange={handleChange}
           className="w-full border p-2 rounded mb-4"
         >
           <option value="LOW">Low</option>
@@ -127,17 +129,10 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
         </select>
 
         <div className="flex justify-end gap-2">
-          <Button 
-            type="button" 
-            variant="ghost" 
-            onClick={onClose}
-          >
+          <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            disabled={loading}
-          >
+          <Button type="submit" disabled={loading}>
             {loading ? "Saving..." : "Save"}
           </Button>
         </div>

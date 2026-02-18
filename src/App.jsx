@@ -33,7 +33,7 @@ function App() {
             </ProtectedRoute>
           } />
 
-           <Route path="/tasks" element={
+          <Route path="/tasks" element={
             <ProtectedRoute>
               <Suspense fallback={<div>Loading...</div>}>
                 <Todos />
@@ -41,7 +41,13 @@ function App() {
             </ProtectedRoute>
           } />
 
-          <Route path="/tasks/:id" element={<TodoDetails />} />
+          <Route path="/tasks/:id" element={
+            <ProtectedRoute>
+              <Suspense fallback={<div>Loading...</div>}>
+                <TodoDetails />
+              </Suspense>
+            </ProtectedRoute>
+          } />
 
           <Route path='/error' element={<ErrorTest />} />
           <Route path='*' element={<NotFound />} />
