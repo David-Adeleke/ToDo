@@ -192,7 +192,7 @@ export default function Todo() {
 
                 {task.endDate && (
                   <p className="text-xs text-gray-500 mb-2">
-                    Start: {new Date(task.endDate).toLocaleDateString()}
+                    End: {new Date(task.endDate).toLocaleDateString()}
                   </p>
                 )}
 

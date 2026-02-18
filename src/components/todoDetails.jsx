@@ -28,7 +28,7 @@ export default function TodoDetails() {
           throw new Error(result.message || 'Failed to fetch todo')
         }
 
-        setTodo(result.data)
+        setTodo(result)
       } catch(err) {
         setError(err.message)
       } finally {
