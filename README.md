@@ -101,5 +101,4 @@ npm run lint
 This stack provides a balance of speed, simplicity, and maintainability. Vite ensures fast development builds, while Tailwind CSS and shadcn allow rapid creation of responsive, accessible UIs. React Hook Form makes handling forms simple and reduces boilerplate. Overall, the stack keeps the project modular, scalable, and easy to extend.
 
 ## Known Issues and Future Improvements
-- Todo details page currently navigates to an error page instead of displaying task information correctly.
 - Dark mode toggle could be implemented for better usability in low-light environments.
