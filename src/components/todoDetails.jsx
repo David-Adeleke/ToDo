@@ -124,7 +124,7 @@ export default function TodoDetails() {
       </button>
 
       <div className="bg-white shadow-md rounded-2xl p-8 border">
-        {/* Title + Actions */}
+
         <div className="flex justify-between items-start mb-6">
           <h1 className="text-3xl font-bold">{todo.name}</h1>
 
@@ -144,7 +144,6 @@ export default function TodoDetails() {
           </div>
         </div>
 
-        {/* Status & Priority */}
         <div className="flex flex-wrap gap-4 mb-6">
           <span className="px-3 py-1 text-sm rounded-full bg-gray-100">
             Status: {formatText(todo.status)}
@@ -155,7 +154,6 @@ export default function TodoDetails() {
           </span>
         </div>
 
-        {/* Description */}
         <div className="mb-6">
           <h2 className="font-semibold mb-2">Description</h2>
           <p className="text-gray-700 leading-relaxed">
@@ -163,7 +161,6 @@ export default function TodoDetails() {
           </p>
         </div>
 
-        {/* Dates */}
         <div className="grid sm:grid-cols-2 gap-6 mb-6">
           {todo.start && (
             <div>
@@ -184,7 +181,6 @@ export default function TodoDetails() {
           )}
         </div>
 
-        {/* Meta */}
         <div className="border-t pt-4 text-sm text-gray-500 space-y-1">
           <p>
             Created:{" "}

@@ -54,7 +54,6 @@ export default function Todo() {
 
   useEffect(() => {
     fetchTasks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, status]);
 
   // ================= CREATE / UPDATE =================
@@ -72,20 +71,18 @@ export default function Todo() {
         ? `${BASE_URL}/tasks/${editingTask.id}`
         : `${BASE_URL}/tasks`;
 
-      // ✅ Match API docs: name + status required, start/end optional, etc.
       const payload = {
         name: data.name,
-        status: data.status, // required by API
+        status: data.status,
         description: data.description ?? null,
         start: data.start ?? null,
         end: data.end ?? null,
         priority: data.priority ?? "LOW",
-        // optional fields you can include if your API supports them:
         archived: data.archived ?? false,
       };
 
       const res = await fetch(url, {
-        method: isEditing ? "PATCH" : "POST", // ✅ API uses PATCH for update
+        method: isEditing ? "PATCH" : "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -195,7 +192,6 @@ export default function Todo() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {tasks.map((task) => {
-              // ✅ Use start/end from API
               const { id, name, description, status, priority, start, end } = task;
 
               return (
