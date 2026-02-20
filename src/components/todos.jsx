@@ -16,7 +16,7 @@ export default function Todo() {
   const [status, setStatus] = useState("ALL");
 
   const [loading, setLoading] = useState(true);
-  const [action, setAction] = useState(null);
+  const [action, setAction] = useState(null); // "save" | taskId
   const [error, setError] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
@@ -24,24 +24,25 @@ export default function Todo() {
 
   const token = localStorage.getItem("accessToken");
 
+  // ================= FETCH =================
   const fetchTasks = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      let query = `?page=${page}&limit=10&search=${search}`;
+      let query = `?page=${page}&limit=10&search=${encodeURIComponent(search)}`;
       if (status !== "ALL") query += `&status=${status}`;
 
-      const response = await fetch(`${BASE_URL}/tasks${query}`, {
+      const res = await fetch(`${BASE_URL}/tasks${query}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!response.ok) {
-        const result = await response.json();
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
         throw new Error(result.message || "Failed to fetch tasks");
       }
 
-      const result = await response.json();
       setTasks(result.data || []);
       setMeta(result.meta || null);
     } catch (err) {
@@ -53,29 +54,49 @@ export default function Todo() {
 
   useEffect(() => {
     fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, status]);
 
   // ================= CREATE / UPDATE =================
   const handleSave = async (data) => {
+    if (!token) {
+      alert("You are not logged in. Please login again.");
+      return;
+    }
+
     try {
       setAction("save");
 
-      const url = editingTask
+      const isEditing = Boolean(editingTask?.id);
+      const url = isEditing
         ? `${BASE_URL}/tasks/${editingTask.id}`
         : `${BASE_URL}/tasks`;
 
-      const response = await fetch(url, {
-        method: editingTask ? "PUT" : "POST",
+      // ✅ Match API docs: name + status required, start/end optional, etc.
+      const payload = {
+        name: data.name,
+        status: data.status, // required by API
+        description: data.description ?? null,
+        start: data.start ?? null,
+        end: data.end ?? null,
+        priority: data.priority ?? "LOW",
+        // optional fields you can include if your API supports them:
+        archived: data.archived ?? false,
+      };
+
+      const res = await fetch(url, {
+        method: isEditing ? "PATCH" : "POST", // ✅ API uses PATCH for update
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || "Something went wrong");
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(result.message || `Request failed (${res.status})`);
       }
 
       setOpenModal(false);
@@ -95,14 +116,14 @@ export default function Todo() {
     try {
       setAction(id);
 
-      const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+      const res = await fetch(`${BASE_URL}/tasks/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete");
-      }
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) throw new Error(result.message || "Failed to delete");
 
       fetchTasks();
     } catch (err) {
@@ -113,10 +134,10 @@ export default function Todo() {
   };
 
   const formatText = (value) =>
-  value
-    ?.toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+    value
+      ?.toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
     <section className="p-6 min-h-screen">
@@ -126,9 +147,9 @@ export default function Todo() {
         <div className="flex gap-4 flex-wrap">
           <SearchBox
             value={search}
-            onChange={(value) => {
+            onChange={(v) => {
               setPage(1);
-              setSearch(value);
+              setSearch(v);
             }}
             loading={loading}
           />
@@ -150,8 +171,11 @@ export default function Todo() {
         </div>
       </header>
 
-      {error && <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">{error}</div>}
-      {loading && <Loader/>}
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 text-red-600 rounded">{error}</div>
+      )}
+
+      {loading && <Loader />}
 
       {!loading && tasks.length === 0 && (
         <div className="flex justify-center items-center h-[60vh]">
@@ -171,61 +195,65 @@ export default function Todo() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {tasks.map((task) => {
-              const {id, name, description, status, priority, startDate, endDate} = task
+              // ✅ Use start/end from API
+              const { id, name, description, status, priority, start, end } = task;
+
               return (
-              <div
-                key={id}
-                className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
-              >
-                <Link to={`/tasks/${id}`}>
-                  <h2 className="font-semibold mb-2 truncate">{name}</h2>
-                </Link>
+                <div
+                  key={id}
+                  className="border rounded-xl p-4 shadow-sm flex flex-col justify-between"
+                >
+                  <Link to={`/tasks/${id}`}>
+                    <h2 className="font-semibold mb-2 truncate">{name}</h2>
+                  </Link>
 
-                {description && (
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {description}
+                  {description && (
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      {description}
+                    </p>
+                  )}
+
+                  <p className="text-sm mb-1">Status: {formatText(status)}</p>
+                  <p className="mb-1 text-sm">
+                    <span className="font-medium">Priority:</span>{" "}
+                    {formatText(priority)}
                   </p>
-                )}
 
-                <p className="text-sm mb-1">Status: {formatText(status)}</p>
-                <p className="mb-1 text-sm">
-                  <span className="font-medium">Priority:</span> {formatText(priority)}
-                </p>
+                  {start && (
+                    <p className="text-xs text-gray-500">
+                      Start: {new Date(start).toLocaleDateString()}
+                    </p>
+                  )}
 
-                {startDate && (
-                  <p className="text-xs text-gray-500">
-                    Start: {new Date(startDate).toLocaleDateString()}
-                  </p>
-                )}
+                  {end && (
+                    <p className="text-xs text-gray-500 mb-2">
+                      End: {new Date(end).toLocaleDateString()}
+                    </p>
+                  )}
 
-                {endDate && (
-                  <p className="text-xs text-gray-500 mb-2">
-                    End: {new Date(endDate).toLocaleDateString()}
-                  </p>
-                )}
+                  <div className="flex justify-between gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setEditingTask(task);
+                        setOpenModal(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
 
-                <div className="flex justify-between gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setEditingTask(task);
-                      setOpenModal(true);
-                    }}
-                  >
-                    Edit
-                  </Button>
-
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    disabled={action === id}
-                    onClick={() => handleDelete(id)}
-                  >
-                    {action === id ? "Deleting..." : "Delete"}
-                  </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled={action === id}
+                      onClick={() => handleDelete(id)}
+                    >
+                      {action === id ? "Deleting..." : "Delete"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )})}
+              );
+            })}
 
             <button
               onClick={() => {
@@ -240,9 +268,21 @@ export default function Todo() {
 
           {meta && (
             <div className="flex justify-center items-center gap-4 mt-8">
-              <Button disabled={!meta.hasPreviousPage} onClick={() => setPage((p) => p - 1)}>Prev</Button>
-              <span>Page {meta.page} of {meta.totalPages}</span>
-              <Button disabled={!meta.hasNextPage} onClick={() => setPage((p) => p + 1)}>Next</Button>
+              <Button
+                disabled={!meta.hasPreviousPage}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                Prev
+              </Button>
+              <span>
+                Page {meta.page} of {meta.totalPages}
+              </span>
+              <Button
+                disabled={!meta.hasNextPage}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </Button>
             </div>
           )}
         </>
@@ -257,7 +297,7 @@ export default function Todo() {
           }}
           onSave={handleSave}
           loading={action === "save"}
-          initialData={editingTask}
+          initialData={editingTask || null}
         />
       )}
     </section>

@@ -1,6 +1,17 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
+// Convert ISO date -> YYYY-MM-DD for <input type="date">
+const toInputDate = (isoLike) => {
+  if (!isoLike) return "";
+  const d = new Date(isoLike);
+  if (Number.isNaN(d.getTime())) return "";
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
 export default function TodoModal({ open, onClose, onSave, loading, initialData }) {
   const [form, setForm] = useState({
     name: "",
@@ -11,13 +22,14 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
     priority: "LOW",
   });
 
+  // ✅ Prefill from API fields start/end
   useEffect(() => {
     if (initialData) {
       setForm({
         name: initialData.name || "",
         description: initialData.description || "",
-        startDate: initialData.startDate?.slice(0, 10) || "",
-        endDate: initialData.endDate?.slice(0, 10) || "",
+        startDate: toInputDate(initialData.start),
+        endDate: toInputDate(initialData.end),
         status: initialData.status || "TODO",
         priority: initialData.priority || "LOW",
       });
@@ -34,10 +46,7 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
   }, [initialData, open]);
 
   const handleChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e) => {
@@ -48,17 +57,22 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
       return;
     }
 
-    onSave(form);
+    // ✅ Send exactly what API expects: start/end (ISO), name/status required
+    onSave({
+      name: form.name,
+      status: form.status,
+      description: form.description || null,
+      priority: form.priority || "LOW",
+      start: form.startDate ? new Date(form.startDate).toISOString() : null,
+      end: form.endDate ? new Date(form.endDate).toISOString() : null,
+    });
   };
 
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <form
-        className="bg-white p-6 rounded-xl w-96"
-        onSubmit={handleSubmit}
-      >
+      <form className="bg-white p-6 rounded-xl w-96" onSubmit={handleSubmit}>
         <h2 className="text-xl font-bold mb-4">
           {initialData ? "Edit Task" : "New Task"}
         </h2>
