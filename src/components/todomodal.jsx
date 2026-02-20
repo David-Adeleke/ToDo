@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-// Convert ISO date -> YYYY-MM-DD for <input type="date">
 const toInputDate = (isoLike) => {
   if (!isoLike) return "";
   const d = new Date(isoLike);
@@ -22,7 +21,6 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
     priority: "LOW",
   });
 
-  // ✅ Prefill from API fields start/end
   useEffect(() => {
     if (initialData) {
       setForm({
@@ -57,7 +55,6 @@ export default function TodoModal({ open, onClose, onSave, loading, initialData 
       return;
     }
 
-    // ✅ Send exactly what API expects: start/end (ISO), name/status required
     onSave({
       name: form.name,
       status: form.status,
